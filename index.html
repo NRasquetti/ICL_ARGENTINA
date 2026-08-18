@@ -684,6 +684,16 @@ async function renderRecContent(){
   cont.innerHTML='<div class="empty"><div class="empty-i">⏳</div><div class="empty-t">Cargando...</div></div>';
   const ok=await fbInit();
   if(!ok){cont.innerHTML='<div class="empty"><div class="empty-i">⚠️</div><div class="empty-t">Error conectando con Firebase</div></div>';return;}
+  // Esperar a que Auth confirme el estado del usuario (máx 3 segundos)
+  if(!_fb._authResolved){
+    await new Promise(resolve=>{
+      const unsub=_fb.mod.onAuthStateChanged(_fb.auth,u=>{
+        _fb.user=u;_fb._authResolved=true;
+        unsub();resolve();
+      });
+      setTimeout(()=>{_fb._authResolved=true;resolve();},3000);
+    });
+  }
 
   let mapaHtml=`<div id="map-reclamos"></div>`;
   let formHtml='';

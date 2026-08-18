@@ -734,8 +734,8 @@ async function renderRecContent(){
   // Lista reclamos recientes
   let recsHtml='<div class="empty"><div class="empty-t">Cargando reclamos...</div></div>';
   try{
-    const{getDocs,collection,query,orderBy,limit}=_fb.mod;
-    const snap=await getDocs(query(collection(_fb.db,'reclamos'),orderBy('fecha','desc'),limit(30)));
+    const{getDocs,collection,query,limit}=_fb.mod;
+    const snap=await getDocs(query(collection(_fb.db,'reclamos'),limit(50)));
     _fb.recs=[];
     snap.forEach(d=>{const dat=d.data();dat.id=d.id;_fb.recs.push(dat);});
     if(_fb.recs.length===0){
